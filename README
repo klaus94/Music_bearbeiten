@@ -1,0 +1,8 @@
+music_nice.txt ist nur dazu da, um die verknüpfung mit dem desktop icon sicherzustellen
+
+sie enthält die nötigen informationen zum erstellen einer .desktop datei
+
+diese .desktop datei wurde in das verzeichnis: /home/dominik/.local/share/applications 
+sowie auf die Arbeitsfläche/Desktop kopiert und ausführbar gemacht
+
+der pfad zum icon ist in der .desktop datei vorgegeben

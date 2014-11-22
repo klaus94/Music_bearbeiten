@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Music_Meta
+Exec=python /home/dominik/Dokumente/Programmieren/Python/Anwendungen/Music_bearbeiten/music_meta.py
+Icon=/home/dominik/.local/share/icons/icon_music.png
+Terminal=true
+Type=Application
+Categories=Audio;
+StartupNotify=false

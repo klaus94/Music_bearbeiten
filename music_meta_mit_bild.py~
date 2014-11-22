@@ -1,0 +1,70 @@
+#!/ usr/binenv python
+# -*- coding : utf -8 -*-
+
+#This program should edit the meta-data of a mp3, which is in the same directory
+#It takes the name of the file and gives the metadata a title and an artist
+#possible tags: COMM TCMP TPE1(artist) TDRC TIT2(titel) TENC TRCK COMM TPOS TALB(album) COMM COMM TCON UFID
+
+#unfortunately the program does not move the files to a certaint directory yet :/				 	    				   	 
+
+#Imports:
+import sys
+import os
+from mutagen.id3 import ID3, TRCK, TIT2, TPE1, TALB, TDRC, TCON, COMM, APIC
+
+#get right direction:
+if (len(sys.argv) > 1):
+    fpath = sys.argv[1]
+else:
+    fpath = os.path.abspath(os.path.dirname(sys.argv[0]))	#print os.listdir(fpath)
+
+for fn in os.listdir(fpath):
+	fname = os.path.join(fpath, fn)
+	if fname.lower().endswith('.mp3'):		#print fn - songname
+		
+		#get name of the song (filename) and split it up into title and artist
+		#print "extracting artist and title ..."
+		#os.system("sleep 1")
+		name = fn.replace("_"," ")				#delete "_" from title
+		content = name.split(" - ")			#print content - [artist, titel.mp3]
+		artist = content[0]					#get Artist
+		artist.replace(" _ ", "")			#delete "_" from artist
+		title = content[1].strip(".mp3")	#get title (delete '.mp3')
+		title.replace(" _ ","")				#delete " _ " from title
+		
+		#make screenshot
+		os.system("import -resize 32x32 screenshot.png")
+		imgdata = open(u'/home/dominik/Dokumente/Programmieren/Python/Anwendungen/Music_bearbeiten/screenshot.png').read()
+		img = APIC(3, u'image/png', 1, u"32x32 pixels 'file icon' (PNG only)", imgdata)
+		
+		#make audio-object from current song and add tags
+		#print "set tags to the right values ..."
+		#os.system("sleep 1")
+		audio = ID3(fname)
+		audio.add(TIT2(encoding=3, text=title))
+		audio.add(TPE1(encoding=3, text=artist))
+		audio.add(img)	#geaendert
+		audio.save()
+		
+		#move title to /home/dominik/Musik
+		#print "sending " + artist + " - " + title + " to home/domink/Musik ..."
+		#os.system("sleep 1")
+		sendTitle = fn.replace(" ", "\ ").replace("(", "\(").replace(")", "\)")	#sonderzeichen erkennen
+		fname = os.path.join(fpath, sendTitle)
+		os.system("mv " + fname + " /home/dominik/Musik")
+		
+		#rename title
+		newTitle = fn.replace(" ", "\ ").replace("(", "\(").replace(")", "\)").replace("_","\ ")	#sonderzeichen erkennen
+		if sendTitle != newTitle:
+			os.system("mv /home/dominik/Musik/" + sendTitle + " /home/dominik/Musik/" + newTitle)
+
+		
+		#screenshot loeschen
+		os.system("rm screenshot.png")
+		
+		#a.tags.add(img)
+		
+		#Informationen
+		#os.system("sleep 1")
+		#print "all tasks were successfully finished :)"
+		#os.system("sleep 2")
