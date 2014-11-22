@@ -6,3 +6,10 @@ diese .desktop datei wurde in das verzeichnis: /home/dominik/.local/share/applic
 sowie auf die Arbeitsfläche/Desktop kopiert und ausführbar gemacht
 
 der pfad zum icon ist in der .desktop datei vorgegeben
+
+
+GIT - HELP:
+
+git add [DATEI]
+git commit -m "[KOMMENTAR]"
+git push -u origin master
