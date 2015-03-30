@@ -28,6 +28,10 @@ def extractTitleAndArtist(fileName):
 
 
 def makeScreenshot():
+	#mp4 loeschen
+	os.system('find . -name "*.mp4" -exec rm -rf {} \;')
+
+
 	fn = list1.get(ACTIVE)
 	if (len(sys.argv) > 1):
 		fpath = sys.argv[1]
@@ -56,9 +60,12 @@ def makeScreenshot():
 	)
 	audio.save()
 	
-	sendTitle = fn.replace(" ", "\ ").replace("(", "\(").replace(")", "\)")
+	sendTitle = fn.replace(" ", "\ ").replace("(", "\(").replace(")", "\)").replace("&", "\&")
 	fname = os.path.join(fpath, sendTitle)
+	#tkMessageBox.showinfo("Info", "fname: %s"%(fname))
 	os.system("mv " + fname + " /home/dominik/Musik")
+
+	
 	
 	if (artist != ""):
 		newTitle = artist + " - " + title + ".mp3"
@@ -68,6 +75,8 @@ def makeScreenshot():
 
 	if sendTitle != newTitle:
 		os.system("mv /home/dominik/Musik/" + sendTitle + " /home/dominik/Musik/" + newTitle)
+
+	
 
 	
 	#screenshot loeschen
@@ -108,14 +117,13 @@ for fn in os.listdir(fpath):				# z.B.: fn: Darude - Sandstorm.mp3
 		musicList[index] = fn
 		index += 1
 
-
 ######################################
 ########### GUI ######################
 
 
 if (len(musicList) == 0):
 	tkMessageBox.showinfo("Info", "Im Ordner: %s ist keine mp3-Datei"%(fpath))
-else:	
+else:
 	HEIGHT = 400
 	WIDTH = 300
 
