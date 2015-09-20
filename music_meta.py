@@ -1,5 +1,5 @@
 #!/ usr/binenv python
-# -*- coding : utf -8 -*-
+# -*- coding: iso-8859-1 -*-
 
 from Tkinter import *
 import tkMessageBox
@@ -46,11 +46,14 @@ def makeScreenshot():
 	os.system("sleep 1")
 
 	audio = ID3(fname)
-	audio.add(TIT2(encoding=3, text=title))
-	audio.add(TPE1(encoding=3, text=artist))
+	audio.add(TIT2(encoding=3, text=title))			# title
+	audio.add(TPE1(encoding=3, text=artist))		# artist
+	# test
+	audio.add(TCON(encoding=3, text=chosenGenre.get() ))			# genre
+	audio.add(TDRC(encoding=3, text=chosenYear.get() ))				# year
 		
 	audio.add(
-		APIC(
+		APIC(										# cover
 			encoding=3, # 3 is for utf-8
 			mime='image/png', # image/jpeg or image/png
 			type=3, # 3 is for the cover image
@@ -60,8 +63,10 @@ def makeScreenshot():
 	)
 	audio.save()
 	
-	sendTitle = fn.replace(" ", "\ ").replace("(", "\(").replace(")", "\)").replace("&", "\&")
+	sendTitle = fn.replace(" ", "\ ").replace("(", "\(").replace(")", "\)")#.replace("&", "\&")
 	fname = os.path.join(fpath, sendTitle)
+	#test
+	fname.replace(" ", "\ ").replace("(", "\(").replace(")", "\)").replace("_","\ ")
 	#tkMessageBox.showinfo("Info", "fname: %s"%(fname))
 	os.system("mv " + fname + " /home/dominik/Musik")
 
@@ -83,6 +88,9 @@ def makeScreenshot():
 	os.system("rm screenshot.png")
 	list1.delete(list1.index(ACTIVE))
 
+	if (list1.size() == 0):
+		root.destroy()
+
 
 def setEntry(event):
 	artist, title = extractTitleAndArtist(list1.get(ACTIVE))
@@ -100,7 +108,7 @@ def presetEntry():
 
 ####################################
 ####################################
-################ MAIN ##############
+################ INIT ##############
 ####################################
 
 musicList = {}
@@ -125,7 +133,7 @@ if (len(musicList) == 0):
 	tkMessageBox.showinfo("Info", "Im Ordner: %s ist keine mp3-Datei"%(fpath))
 else:
 	HEIGHT = 400
-	WIDTH = 300
+	WIDTH = 320
 
 	root = Tk()
 	root.geometry(str(WIDTH) + "x" + str(HEIGHT) + "+1050+200")
@@ -135,12 +143,20 @@ else:
 
 	frame1 = Frame(root, width = WIDTH, height = HEIGHT / 2)
 
+	# Vorbereitung Komponenten:
+	chosenGenre = StringVar(root)
+	chosenGenre.set("Drum & Bass")			# default value
+	chosenYear = StringVar(root)
+	chosenYear.set("2015")
+
 	# Komponenten:
 	list1 = Listbox(frame1, selectmode = SINGLE, width=WIDTH / 10)
 	label_title = Label(frame1, text="title: ")
 	label_artist = Label(frame1, text="artist: ")
 	entry_artist = Entry(frame1)
 	entry_title = Entry(frame1)
+	combobox_genre = OptionMenu(frame1, chosenGenre, "Drum & Bass", "Tech House", "Deep House")
+	combobox_year = OptionMenu(frame1, chosenYear, "2015", "2014", "2013", "2012", "2011", "2010", "2009")
 
 
 	# Bearbeitung der Komponenten:
@@ -151,19 +167,23 @@ else:
 	presetEntry()						# titel und autor des ersten titels ausgeben
 	list1.bind("<Double-Button-1>", setEntry)
 
+	#combobox_genre['values'] = ('Drum & Bass', 'Tech House', 'Deep House', 'Techno')
 
 	# Komponenten in Grid packen:
-	list1.grid(row = 0, column = 0, columnspan = 2, pady = 20)
-	label_title.grid(row = 2, column = 0, padx = 10, pady = 20)
+	list1.grid(row = 0, column = 0, columnspan = 2, pady = 10)
+	label_title.grid(row = 2, column = 0, padx = 10, pady = 10)
 	label_artist.grid(row = 1, column = 0, padx = 10, pady = 10)
-	entry_title.grid(row = 2, column = 1, padx = 10, pady = 20)
-	entry_artist.grid(row = 1, column = 1, padx = 10, pady = 10)
+	entry_title.grid(row = 2, column = 1, padx = 5, pady = 10)
+	entry_artist.grid(row = 1, column = 1, padx = 5, pady = 10)
+	combobox_genre.grid(row = 3, column = 0, padx = 10, pady = 10)
+	combobox_year.grid(row = 3, column = 1, padx = 10, pady = 10)
+
 
 	frame1.pack()
 
 	frame2 = Frame(root, width=WIDTH, height = HEIGHT / 2)
 	makePhotoButton = Button(frame2, text="make photo!", command=makeScreenshot).grid(row=0, column=0, padx = 10, pady = 30)	
-	useUKF_Button = Button(frame2, text="use UKF-photo").grid(row=0, column=1, padx = 10, pady = 30)	#, command=...
+	#useUKF_Button = Button(frame2, text="use UKF-photo").grid(row=0, column=1, padx = 10, pady = 30)	#, command=...
 	frame2.pack()
 
 	root.mainloop()
